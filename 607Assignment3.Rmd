@@ -1,0 +1,159 @@
+---
+title: "607Assignment3"
+author: "Lwin Shwe"
+date: "2023-09-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###  1. Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset
+[https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/],
+provide code that identifies the majors that contain either "DATA" or "STATISTICS".
+
+
+```{r loading-data}
+library(RCurl)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+
+#Import CSV from Raw File of 173 majors listed in fivethirtyeight.com’s College Majors dataset
+College_majors = read.csv('https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv')
+
+
+# Identify the majors that contain either "DATA" or "STATISTICS"
+Idenfied_majors <- College_majors %>%
+  filter(str_detect(Major, "DATA|STATISTICS"))
+
+```
+
+
+###  2. Write code that transforms the data below:
+
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+[13] "olive"        "salal berry"
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+
+```{r string-data, echo=FALSE}
+# Data String
+String_data <- c(
+  "bell pepper", "bilberry", "blackberry", "blood orange",
+  "blueberry", "cantaloupe", "chili pepper", "cloudberry",
+  "elderberry", "lime", "lychee", "mulberry",
+  "olive", "salal berry"
+)
+
+# Transform the data into the desired format
+transformed_data <- paste0('"', String_data, '"')
+
+# Print the formatted data
+cat(transformed_data, sep = ", ")
+
+summary(transformed_data)
+
+```
+
+###  3. Describe, in words, what these expressions will match:
+
+•	(.)\1\1 : This expression matches any character repeated three times in a row
+
+```{r aaa}
+
+# Check for matches of the pattern (.)\1\1 in each string
+matches <- str_detect(String_data, "(.)\\1\\1")
+
+# Display the matches
+String_data[matches]
+
+```
+
+
+•	"(.)(.)\\2\\1": This expression matches two characters followed by the same two characters in reverse order
+
+```{r aabb}
+
+# Check for matches of the pattern (.)(.)\\2\\1 in each string
+matches <- str_detect(String_data, "(.)(.)\\2\\1")
+
+# Display the matches
+String_data[matches]
+
+```
+
+•	(..)\1 : This expression matches two characters repeated twice. E.g "abab", "abba"
+
+```{r abab}
+# Check for matches of the pattern (..)\1 in each string
+matches <- str_detect(String_data, "(..)\1")
+
+# Display the matches
+String_data[matches]
+```
+
+
+•	"(.).\\1.\\1" : This expression matches a character repeated three times with characters in between each repetition, e.g. abaca
+
+```{r abaca}
+# Check for matches of the pattern "(.).\\1.\\1" in each string
+matches <- str_detect(String_data, "(.).\\1.\\1")
+
+# Display the matches
+String_data[matches]
+```
+
+
+•	"(.)(.)(.).*\\3\\2\\1" : This expression matches characters followed by any character repeate 0 or more times and then the same three characters in reverse order.Eg. "abc312131cba", "aaabbbccc"
+
+```{r aaabbbccc}
+# Check for matches of the pattern "(.)(.)(.).*\\3\\2\\1" in each string
+matches <- str_detect(String_data, "(.)(.)(.).*\\3\\2\\1")
+
+# Display the matches
+String_data[matches]
+```
+
+
+
+### 4.Construct regular expressions to match words that:
+
+•	Start and end with the same character.
+
+```{r same-start-and-end}
+# Consider words in the category of jewelries
+Jewelries <- c(
+  "studs", "necklaces", "bracelets", "rings",
+  "pendant", "earrings", "anklets", "watches",
+  "brooches", "cufflinks", "chains", "headpieces",
+  "bangles", "hoops"
+)
+
+similarities_a <- str_subset(Jewelries, "^(.)((.*\\1$)|\\1?$)")
+similarities_a
+```
+
+
+•	Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+
+```{r repeated-pairs}
+similarities_b <- str_subset(Jewelries, "(..).*\\1")
+similarities_b
+```
+
+
+•	Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s
+
+```{r repeated-three}
+similarities_c <- str_subset(Jewelries, "(.).*\\1.*\\1")
+similarities_c
+```
+
